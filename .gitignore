@@ -76,3 +76,6 @@ DerivedDataCache/*
 
 # 환경 오브젝트 데모 팩
 Content/KiteDemo/*
+
+# Plugins
+Plugins/*
