@@ -20,45 +20,33 @@ void AInteractableBase::BeginPlay()
 void AInteractableBase::Interact_Implementation()
 {
     ACharacter *PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-    if (!PlayerCharacter)
+    if (PlayerCharacter == nullptr)
         return;
 
     AMainCharacter *MainCharacter = Cast<AMainCharacter>(PlayerCharacter);
-    if (!MainCharacter)
+    if (MainCharacter == nullptr)
         return;
 
     UE_LOG(LogTemp, Warning, TEXT("AInteractableBase::Interact_Implementation()"));
 
-    // ADay365Character로 캐스트는 나중에 C++ 캐릭터 클래스 만들면 추가
     if (ItemData.InteractionType == EInteractionType::Acquire)
     {
         if (ItemData.ItemType == EItemType::Watch)
         {
             MainCharacter->AquirePocketWatch();
-            return;
         }
         else
         {
             MainCharacter->AddItemToInventory(ItemData);
         }
+
+        Destroy();
     }
     else if (ItemData.InteractionType == EInteractionType::Puzzle)
     {
     }
     else // EInteractionType::NoInteraction
     {
-    }
-
-    switch (ItemData.ItemType)
-    {
-    case EItemType::Watch:
-    case EItemType::Tool:
-    case EItemType::Note:
-    case EItemType::Special:
-        OnAcquire_Implementation(nullptr);
-        break;
-    default:
-        break;
     }
 }
 
