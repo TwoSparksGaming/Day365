@@ -58,6 +58,11 @@ struct FItemData
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
     UStaticMesh *ItemMesh = nullptr;
+
+    bool IsValid() const
+    {
+        return ItemID != NAME_None;
+    }
 };
 
 USTRUCT(BlueprintType)

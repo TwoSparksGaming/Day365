@@ -6,6 +6,7 @@
 #include "InputActionValue.h"
 #include "Camera/PlayerCameraManager.h"
 #include "InteractableInterface.h"
+#include "PlaceSpot.h"
 #include "MainCharacter.generated.h"
 
 class UCameraComponent;
@@ -68,20 +69,15 @@ class DAY365_API AMainCharacter : public ACharacter
     UFUNCTION(BlueprintImplementableEvent, Category = "Interaction")
     void SetInteractWidgetVisible(bool bVisible);
 
-    UFUNCTION(BlueprintImplementableEvent, Category = "Interaction")
-    void ClearPreview();
-
-    UFUNCTION(BlueprintImplementableEvent, Category = "Interaction")
-    void UpdatePlaceSpotPreview(AActor *PlaceSpot, FItemData SelectedItem);
-
   private:
+    // Line Trace
     void PerformInteractionTrace();
 
     UPROPERTY()
     AActor *CurrentTarget = nullptr;
 
     UPROPERTY()
-    AActor *CurrentPlaceSpot = nullptr;
+    APlaceSpot *CurrentPlaceSpot = nullptr;
 
     UPROPERTY(EditAnywhere, Category = "Interaction")
     float TraceLength = 200.0f;
@@ -122,6 +118,9 @@ class DAY365_API AMainCharacter : public ACharacter
 
     UFUNCTION(BlueprintCallable, Category = "Inventory")
     void RemoveItemFromInventory(FItemData Item);
+
+    UFUNCTION(BlueprintCallable, Category = "Inventory")
+    void RemoveSelectedItemFromInventory();
 
     UFUNCTION(BlueprintCallable, Category = "Time")
     void AquirePocketWatch();

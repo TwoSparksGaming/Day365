@@ -4,6 +4,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "InteractableBase.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -47,6 +48,12 @@ void AMainCharacter::AddItemToInventory(FItemData NewItem)
 void AMainCharacter::RemoveItemFromInventory(FItemData Item)
 {
     InventoryItems.RemoveAll([&Item](const FItemData &Element) { return Element.ItemID == Item.ItemID; });
+    OnInventoryUpdated();
+}
+
+void AMainCharacter::RemoveSelectedItemFromInventory()
+{
+    RemoveItemFromInventory(GetSelectedItem());
 }
 
 void AMainCharacter::AquirePocketWatch()
@@ -63,11 +70,11 @@ void AMainCharacter::AquirePocketWatch()
 
 void AMainCharacter::PerformInteractionTrace()
 {
-    // bIsInteracting »óÅÂ¸é ÈùÆ® ¼û±â°í return
     if (bIsInteracting == true)
     {
         SetInteractWidgetVisible(false);
-        ClearPreview();
+        if (CurrentPlaceSpot != nullptr)
+            CurrentPlaceSpot->HidePreview();
         return;
     }
 
@@ -87,32 +94,68 @@ void AMainCharacter::PerformInteractionTrace()
     bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params);
     if (bHit == false)
     {
-        // ÀÌÀü Å¸°Ù À±°û¼± ²ô±â
-        if (CurrentTarget != nullptr)
-        {
-            // À±°û¼± ²ô±â ¡æ ºí·çÇÁ¸°Æ®·Î À§ÀÓ
-            SetInteractWidgetVisible(false);
-            CurrentTarget = nullptr;
-        }
-        ClearPreview();
-        return;
+        SetInteractWidgetVisible(false);
+        CurrentTarget = nullptr;
+        if (CurrentPlaceSpot != nullptr)
+            CurrentPlaceSpot->HidePreview();
     }
 
     AActor *HitActor = HitResult.GetActor();
     if (HitActor == nullptr)
         return;
 
-    IInteractableInterface *Interactable = Cast<IInteractableInterface>(HitActor);
-    if (Interactable == nullptr)
+    // PlaceSpot ¸ÕÀú Ã¼Å©
+    APlaceSpot *PlaceSpot = Cast<APlaceSpot>(HitActor);
+    if (PlaceSpot != nullptr)
+    {
+        if (PlaceSpot->GetHasItem() == true)
+        {
+            if (PlaceSpot->Execute_CanInteract(PlaceSpot) == true)
+            {
+                CurrentTarget = HitActor;
+                SetInteractWidgetVisible(true);
+            }
+            else
+            {
+                CurrentTarget = nullptr;
+                SetInteractWidgetVisible(false);
+            }
+        }
+        else
+        {
+            FItemData SelectedItem = GetSelectedItem();
+            if (SelectedItem.IsValid() == false)
+                return;
+
+            PlaceSpot->ShowPreview();
+            CurrentPlaceSpot = PlaceSpot;
+        }
+
         return;
+    }
 
-    if (Interactable->Execute_CanInteract(HitActor) == false)
+    // InteractableBase Ã¼Å©
+    AInteractableBase *Interactable = Cast<AInteractableBase>(HitActor);
+    if (Interactable != nullptr)
+    {
+        if (Interactable->Execute_CanInteract(Interactable) == true)
+        {
+            CurrentTarget = HitActor;
+            SetInteractWidgetVisible(true);
+        }
+        else
+        {
+            CurrentTarget = nullptr;
+            SetInteractWidgetVisible(false);
+        }
         return;
+    }
 
-    CurrentTarget = HitActor;
-    SetInteractWidgetVisible(true);
-
-    UpdatePlaceSpotPreview(HitActor, GetSelectedItem());
+    // µÑ ´Ù ¾Æ´Ï¸é ÃÊ±âÈ­
+    CurrentTarget = nullptr;
+    SetInteractWidgetVisible(false);
+    if (CurrentPlaceSpot != nullptr)
+        CurrentPlaceSpot->HidePreview();
 }
 
 FItemData AMainCharacter::GetSelectedItem() const
@@ -125,11 +168,18 @@ FItemData AMainCharacter::GetSelectedItem() const
 
 void AMainCharacter::OnInteract()
 {
-    if (CurrentTarget == nullptr)
-        return;
-
     if (bIsInteracting == true)
         return;
 
-    IInteractableInterface::Execute_Interact(CurrentTarget);
+    if (CurrentTarget != nullptr)
+    {
+        IInteractableInterface::Execute_Interact(CurrentTarget);
+        return;
+    }
+
+    if (CurrentPlaceSpot != nullptr)
+    {
+        IInteractableInterface::Execute_Interact(CurrentPlaceSpot);
+        return;
+    }
 }

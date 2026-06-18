@@ -32,35 +32,31 @@ class DAY365_API APlaceSpot : public AActor, public IInteractableInterface
     UPROPERTY(EditAnywhere, Category = "PlaceSpot")
     UDataTable *ItemVisualDataTable = nullptr;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlaceSpot")
+    UMaterialInterface *PreviewMaterial = nullptr;
+
   public:
     // IInteractableInterface 구현
     virtual void Interact_Implementation() override;
     virtual bool CanInteract_Implementation() override;
 
-    // 아이템 배치 가능 여부 확인
     UFUNCTION(BlueprintCallable, Category = "PlaceSpot")
     bool IsAcceptable(FName ItemID) const;
 
-    // 아이템 놓기
     UFUNCTION(BlueprintCallable, Category = "PlaceSpot")
     void PlaceItem();
 
-    // 아이템 집기
     UFUNCTION(BlueprintCallable, Category = "PlaceSpot")
     void PickUpItem();
 
-    // 게터
     UFUNCTION(BlueprintPure, Category = "PlaceSpot")
-    bool GetHasItem() const
-    {
-        return bHasItem;
-    }
+    bool GetHasItem() const;
 
     UFUNCTION(BlueprintPure, Category = "PlaceSpot")
-    FItemData GetPlacedItem() const
-    {
-        return PlacedItem;
-    }
+    FItemData GetPlacedItem() const;
+
+    void ShowPreview();
+    void HidePreview();
 
   protected:
     // 블루프린트에서 구현
