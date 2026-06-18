@@ -59,3 +59,18 @@ struct FItemData
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
     UStaticMesh *ItemMesh = nullptr;
 };
+
+USTRUCT(BlueprintType)
+struct FItemVisualData : public FTableRowBase
+{
+    GENERATED_BODY()
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visual")
+    UStaticMesh *Mesh = nullptr;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visual")
+    TArray<UMaterialInterface *> Materials;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visual")
+    UTexture2D *Icon = nullptr;
+};

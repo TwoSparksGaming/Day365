@@ -4,6 +4,8 @@
 #include "GameFramework/Character.h"
 #include "GameTypes.h"
 #include "InputActionValue.h"
+#include "Camera/PlayerCameraManager.h"
+#include "InteractableInterface.h"
 #include "MainCharacter.generated.h"
 
 class UCameraComponent;
@@ -15,9 +17,6 @@ UCLASS()
 class DAY365_API AMainCharacter : public ACharacter
 {
     GENERATED_BODY()
-  private:
-  public:
-    AMainCharacter();
 
   protected:
     virtual void BeginPlay() override;
@@ -65,28 +64,35 @@ class DAY365_API AMainCharacter : public ACharacter
     UPROPERTY(BlueprintReadWrite, Category = "Time")
     bool bHaveClock = false;
 
+    // Blueprint Func
+    UFUNCTION(BlueprintImplementableEvent, Category = "Interaction")
+    void SetInteractWidgetVisible(bool bVisible);
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "Interaction")
+    void ClearPreview();
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "Interaction")
+    void UpdatePlaceSpotPreview(AActor *PlaceSpot, FItemData SelectedItem);
+
+  private:
+    void PerformInteractionTrace();
+
+    UPROPERTY()
+    AActor *CurrentTarget = nullptr;
+
+    UPROPERTY()
+    AActor *CurrentPlaceSpot = nullptr;
+
+    UPROPERTY(EditAnywhere, Category = "Interaction")
+    float TraceLength = 200.0f;
+
   public:
-    // Inventory Func
-    UFUNCTION(BlueprintCallable, Category = "Inventory")
-    void AddItemToInventory(FItemData NewItem);
-
-    UFUNCTION(BlueprintCallable, Category = "Inventory")
-    void RemoveItemFromInventory(FItemData Item);
-
-    UFUNCTION(BlueprintImplementableEvent, Category = "Inventory")
-    void OnInventoryUpdated();
-
-    UFUNCTION(BlueprintCallable, Category = "Time")
-    void AquirePocketWatch();
-
-    // ½Ã°è È¹µæ ½Ã UI Ã³¸®
-    UFUNCTION(BlueprintImplementableEvent, Category = "Time")
-    void OnClockAcquired();
+    AMainCharacter();
 
     // Input
     void Move(const FInputActionValue &Value);
     void Look(const FInputActionValue &Value);
-    void Interact();
+    void OnInteract();
 
     // Getter
     UFUNCTION(BlueprintPure, Category = "Inventory")
@@ -106,4 +112,24 @@ class DAY365_API AMainCharacter : public ACharacter
     {
         return CameraComponent;
     }
+
+    UFUNCTION(BlueprintPure, Category = "Inventory")
+    FItemData GetSelectedItem() const;
+
+    // Inventory Func
+    UFUNCTION(BlueprintCallable, Category = "Inventory")
+    void AddItemToInventory(FItemData NewItem);
+
+    UFUNCTION(BlueprintCallable, Category = "Inventory")
+    void RemoveItemFromInventory(FItemData Item);
+
+    UFUNCTION(BlueprintCallable, Category = "Time")
+    void AquirePocketWatch();
+
+    // Blueprint Func
+    UFUNCTION(BlueprintImplementableEvent, Category = "Inventory")
+    void OnInventoryUpdated();
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "Time")
+    void OnClockAcquired();
 };
