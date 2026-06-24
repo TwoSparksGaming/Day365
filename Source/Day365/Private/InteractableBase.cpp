@@ -27,8 +27,6 @@ void AInteractableBase::Interact_Implementation()
     if (MainCharacter == nullptr)
         return;
 
-    UE_LOG(LogTemp, Warning, TEXT("AInteractableBase::Interact_Implementation()"));
-
     if (ItemData.InteractionType == EInteractionType::Acquire)
     {
         if (ItemData.ItemType == EItemType::Watch)
@@ -42,8 +40,17 @@ void AInteractableBase::Interact_Implementation()
 
         Destroy();
     }
-    else if (ItemData.InteractionType == EInteractionType::Puzzle)
+    else if (ItemData.InteractionType == EInteractionType::ZoomInPuzzle)
     {
+        UCameraComponent *InteractCamera = GetInteractCamera();
+        if (InteractCamera == nullptr)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("InteractCamera is not set"));
+            return;
+        }
+
+        MainCharacter->SwitchCamera(InteractCamera, 1.f, true);
+        MainCharacter->SetCurrentInteractObject(this);
     }
     else // EInteractionType::NoInteraction
     {
@@ -53,14 +60,4 @@ void AInteractableBase::Interact_Implementation()
 bool AInteractableBase::CanInteract_Implementation()
 {
     return bCanInteract;
-}
-
-void AInteractableBase::OnAcquire_Implementation(ACharacter *PlayerCharacter)
-{
-    // 블루프린트에서 Override
-}
-
-void AInteractableBase::OnPuzzleInteract_Implementation(ACharacter *PlayerCharacter)
-{
-    // 블루프린트에서 Override
 }

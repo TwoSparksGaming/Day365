@@ -37,6 +37,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCompo
         return;
 
     EnhancedInput->BindAction(IA_Interact, ETriggerEvent::Started, this, &AMainCharacter::OnInteract);
+    EnhancedInput->BindAction(IA_Cancel, ETriggerEvent::Started, this, &AMainCharacter::CancelInteraction);
 }
 
 void AMainCharacter::AddItemToInventory(FItemData NewItem)
@@ -182,4 +183,23 @@ void AMainCharacter::OnInteract()
         IInteractableInterface::Execute_Interact(CurrentPlaceSpot);
         return;
     }
+}
+
+void AMainCharacter::SetCurrentInteractObject(AActor *object)
+{
+    CurrentInteractObject = object;
+    bIsInteracting = true;
+}
+
+void AMainCharacter::CancelInteraction()
+{
+    if (bIsInteracting == false)
+        return;
+
+    if (CurrentInteractObject == nullptr)
+        return;
+
+    SwitchCamera(nullptr, 1.f, false);
+    CurrentInteractObject = nullptr;
+    bIsInteracting = false;
 }

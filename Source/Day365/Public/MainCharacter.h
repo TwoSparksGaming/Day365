@@ -44,12 +44,18 @@ class DAY365_API AMainCharacter : public ACharacter
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
     UInputAction *IA_Interact;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+    UInputAction *IA_Cancel;
+
     // Interaction
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
     float InteractDistance = 200.0f;
 
     UPROPERTY(BlueprintReadWrite, Category = "Interaction")
     bool bIsInteracting = false;
+
+    UPROPERTY(BlueprintReadWrite, Category = "Interaction")
+    AActor *CurrentInteractObject = nullptr;
 
     // Inventory
     UPROPERTY(BlueprintReadWrite, Category = "Inventory")
@@ -91,6 +97,13 @@ class DAY365_API AMainCharacter : public ACharacter
     void OnInteract();
 
     // Getter
+    UFUNCTION(BlueprintPure, Category = "Camera")
+    UCameraComponent *GetCameraComponent() const
+    {
+        return CameraComponent;
+    }
+
+    // Inventory Func
     UFUNCTION(BlueprintPure, Category = "Inventory")
     TArray<FItemData> GetInventoryItems() const
     {
@@ -103,16 +116,9 @@ class DAY365_API AMainCharacter : public ACharacter
         return SelectedIndex;
     }
 
-    UFUNCTION(BlueprintPure, Category = "Camera")
-    UCameraComponent *GetCameraComponent() const
-    {
-        return CameraComponent;
-    }
-
     UFUNCTION(BlueprintPure, Category = "Inventory")
     FItemData GetSelectedItem() const;
 
-    // Inventory Func
     UFUNCTION(BlueprintCallable, Category = "Inventory")
     void AddItemToInventory(FItemData NewItem);
 
@@ -122,8 +128,15 @@ class DAY365_API AMainCharacter : public ACharacter
     UFUNCTION(BlueprintCallable, Category = "Inventory")
     void RemoveSelectedItemFromInventory();
 
+    // Interaction
     UFUNCTION(BlueprintCallable, Category = "Time")
     void AquirePocketWatch();
+
+    UFUNCTION(BlueprintCallable, Category = "Interaction")
+    void SetCurrentInteractObject(AActor *object);
+
+    UFUNCTION(BlueprintCallable, Category = "Interaction")
+    void CancelInteraction();
 
     // Blueprint Func
     UFUNCTION(BlueprintImplementableEvent, Category = "Inventory")
@@ -131,4 +144,7 @@ class DAY365_API AMainCharacter : public ACharacter
 
     UFUNCTION(BlueprintImplementableEvent, Category = "Time")
     void OnClockAcquired();
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "Interaction")
+    void SwitchCamera(UCameraComponent *TargetCamera, float BlendTime, bool bIsZoomIn);
 };

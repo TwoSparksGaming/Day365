@@ -9,7 +9,7 @@ UENUM(BlueprintType)
 enum class EInteractionType : uint8
 {
     Acquire UMETA(DisplayName = "Acquire"),
-    Puzzle UMETA(DisplayName = "Puzzle"),
+    ZoomInPuzzle UMETA(DisplayName = "ZoomInPuzzle"),
     NoInteraction UMETA(DisplayName = "No Interaction")
 };
 
@@ -42,22 +42,10 @@ struct FItemData
     FText ItemName;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-    FText ItemDescription;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-    UTexture2D *ItemIcon = nullptr;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
     EInteractionType InteractionType = EInteractionType::NoInteraction;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
     EItemType ItemType = EItemType::Tool;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-    bool bIsUsable = false;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-    UStaticMesh *ItemMesh = nullptr;
 
     bool IsValid() const
     {

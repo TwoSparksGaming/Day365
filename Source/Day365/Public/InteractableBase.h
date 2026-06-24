@@ -1,10 +1,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
 #include "GameFramework/Actor.h"
-#include "InteractableInterface.h"
-#include "Components/StaticMeshComponent.h" // ← 추가
+#include "Components/StaticMeshComponent.h"
+#include "Camera/CameraComponent.h"
+
 #include "GameTypes.h"
+#include "InteractableInterface.h"
 #include "InteractableBase.generated.h"
 
 UCLASS()
@@ -36,10 +39,9 @@ class DAY365_API AInteractableBase : public AActor, public IInteractableInterfac
     virtual bool CanInteract_Implementation() override;
 
   protected:
-    // 블루프린트에서 Override 가능한 함수들
-    UFUNCTION(BlueprintNativeEvent, Category = "Interaction")
-    void OnAcquire(class ACharacter *PlayerCharacter);
-
-    UFUNCTION(BlueprintNativeEvent, Category = "Interaction")
-    void OnPuzzleInteract(class ACharacter *PlayerCharacter);
+    // 자식 클래스에서 Override해서 카메라 반환
+    virtual UCameraComponent *GetInteractCamera() const
+    {
+        return nullptr;
+    }
 };
