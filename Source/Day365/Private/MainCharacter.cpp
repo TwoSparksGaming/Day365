@@ -41,6 +41,9 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCompo
     EnhancedInput->BindAction(IA_Cancel, ETriggerEvent::Started, this, &AMainCharacter::CancelInteraction);
 }
 
+// 式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式
+// Inventory
+// 式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式
 void AMainCharacter::AddItemToInventory(FItemData NewItem)
 {
     InventoryItems.Add(NewItem);
@@ -70,6 +73,17 @@ void AMainCharacter::AquirePocketWatch()
     OnClockAcquired();
 }
 
+FItemData AMainCharacter::GetSelectedItem() const
+{
+    if (InventoryItems.IsValidIndex(SelectedIndex) == true)
+        return InventoryItems[SelectedIndex];
+
+    return FItemData();
+}
+
+// 式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式
+// Interaction
+// 式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式
 void AMainCharacter::PerformInteractionTrace()
 {
     if (bIsInteracting == true)
@@ -160,14 +174,6 @@ void AMainCharacter::PerformInteractionTrace()
         CurrentPlaceSpot->HidePreview();
 }
 
-FItemData AMainCharacter::GetSelectedItem() const
-{
-    if (InventoryItems.IsValidIndex(SelectedIndex) == true)
-        return InventoryItems[SelectedIndex];
-
-    return FItemData();
-}
-
 void AMainCharacter::OnInteract()
 {
     if (bIsInteracting == true)
@@ -205,7 +211,9 @@ void AMainCharacter::CancelInteraction()
     bIsInteracting = false;
 }
 
+// 式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式
 // Time
+// 式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式
 bool AMainCharacter::PreChangeTime(const bool bToFuture)
 {
     if (bIsTimeChanging == true)
