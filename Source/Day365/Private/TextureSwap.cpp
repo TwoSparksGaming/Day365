@@ -40,6 +40,17 @@ void ATextureSwap::OnTimeChanged_Implementation(ETimeState NewState)
     }
 }
 
+void ATextureSwap::SetMaterials(UMaterialInterface *Material)
+{
+    if (Material == nullptr)
+        return;
+
+    for (int32 i = 0; i < MeshComponent->GetNumMaterials(); i++)
+    {
+        MeshComponent->SetMaterial(i, Material);
+    }
+}
+
 void ATextureSwap::SetMaterials(UMaterialInterface *Past, UMaterialInterface *Present, UMaterialInterface *Future)
 {
     PastMaterial = Past;

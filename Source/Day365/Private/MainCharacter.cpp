@@ -6,6 +6,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InteractableBase.h"
 #include "TimeManager.h"
+#include "PaintPuzzleManager.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -265,7 +266,10 @@ void AMainCharacter::ChangeTime()
     CurrentTimeState = TargetTimeState;
 
     TArray<AActor *> TimeManagers;
+    TArray<AActor *> PaintPuzzleManagers;
+
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATimeManager::StaticClass(), TimeManagers);
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APaintPuzzleManager::StaticClass(), PaintPuzzleManagers);
 
     if (TimeManagers.IsEmpty() == true)
     {
@@ -273,10 +277,22 @@ void AMainCharacter::ChangeTime()
         return;
     }
 
+    if (PaintPuzzleManagers.IsEmpty() == true)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("PaintPuzzleManager not found"));
+        return;
+    }
+
     ATimeManager *TimeManager = Cast<ATimeManager>(TimeManagers[0]);
     if (TimeManager == nullptr)
         return;
 
+    APaintPuzzleManager *PaintPuzzleManager = Cast<APaintPuzzleManager>(PaintPuzzleManagers[0]);
+    if (PaintPuzzleManager == nullptr)
+        return;
+
     TimeManager->NotifyTimeChanged(TargetTimeState);
+    PaintPuzzleManager->CheckCombination();
+
     bIsTimeChanging = false;
 }
