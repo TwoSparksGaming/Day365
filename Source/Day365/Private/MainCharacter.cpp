@@ -5,6 +5,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InteractableBase.h"
+#include "TimeManager.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -202,4 +203,72 @@ void AMainCharacter::CancelInteraction()
     SwitchCamera(nullptr, 1.f, false);
     CurrentInteractObject = nullptr;
     bIsInteracting = false;
+}
+
+// Time
+bool AMainCharacter::PreChangeTime(const bool bToFuture)
+{
+    if (bIsTimeChanging == true)
+        return false;
+
+    bIsTimeChanging = true;
+
+    if (bToFuture == true)
+    {
+        if (CurrentTimeState == ETimeState::Past)
+        {
+            TargetTimeState = ETimeState::Present;
+        }
+        else if (CurrentTimeState == ETimeState::Present)
+        {
+            TargetTimeState = ETimeState::Future;
+        }
+        else if (CurrentTimeState == ETimeState::Future)
+        {
+            bIsTimeChanging = false;
+            return false;
+        }
+    }
+    else
+    {
+        if (CurrentTimeState == ETimeState::Past)
+        {
+            bIsTimeChanging = false;
+            return false;
+        }
+        else if (CurrentTimeState == ETimeState::Present)
+        {
+            TargetTimeState = ETimeState::Past;
+        }
+        else if (CurrentTimeState == ETimeState::Future)
+        {
+            TargetTimeState = ETimeState::Present;
+        }
+    }
+
+    return true;
+}
+
+void AMainCharacter::ChangeTime()
+{
+    if (CurrentTimeState == TargetTimeState)
+        return;
+
+    CurrentTimeState = TargetTimeState;
+
+    TArray<AActor *> TimeManagers;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATimeManager::StaticClass(), TimeManagers);
+
+    if (TimeManagers.IsEmpty() == true)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("TimeManager not found"));
+        return;
+    }
+
+    ATimeManager *TimeManager = Cast<ATimeManager>(TimeManagers[0]);
+    if (TimeManager == nullptr)
+        return;
+
+    TimeManager->NotifyTimeChanged(TargetTimeState);
+    bIsTimeChanging = false;
 }
