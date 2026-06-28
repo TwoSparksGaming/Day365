@@ -67,3 +67,15 @@ struct FItemVisualData : public FTableRowBase
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visual")
     UTexture2D *Icon = nullptr;
 };
+
+USTRUCT(BlueprintType)
+struct FCombinationResult : public FTableRowBase
+{
+    GENERATED_BODY()
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Puzzle")
+    TArray<FName> ItemIDs;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Puzzle")
+    UMaterialInterface *ResultMaterial = nullptr;
+};

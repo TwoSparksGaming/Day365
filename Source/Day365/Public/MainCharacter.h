@@ -64,12 +64,24 @@ class DAY365_API AMainCharacter : public ACharacter
     UPROPERTY(BlueprintReadWrite, Category = "Inventory")
     int32 SelectedIndex = 0;
 
-    // Time State
+    // Time
     UPROPERTY(BlueprintReadWrite, Category = "Time")
     ETimeState CurrentTimeState = ETimeState::Present;
 
     UPROPERTY(BlueprintReadWrite, Category = "Time")
+    ETimeState TargetTimeState = ETimeState::Present;
+
+    UPROPERTY(BlueprintReadWrite, Category = "Time")
+    bool bIsTimeChanging = false;
+
+    UPROPERTY(BlueprintReadWrite, Category = "Time")
     bool bHaveClock = false;
+
+    UFUNCTION(BlueprintCallable, Category = "Time")
+    bool PreChangeTime(const bool bToFuture);
+
+    UFUNCTION(BlueprintCallable, Category = "Time")
+    void ChangeTime();
 
     // Blueprint Func
     UFUNCTION(BlueprintImplementableEvent, Category = "Interaction")
