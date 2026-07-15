@@ -1,4 +1,4 @@
-#include "InteractableWithCamera.h"
+#include "Interaction/InteractableWithCamera.h"
 #include "Camera/CameraComponent.h"
 
 AInteractableWithCamera::AInteractableWithCamera()

@@ -1,4 +1,4 @@
-#include "InteractableBase.h"
+#include "Interaction/InteractableBase.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"

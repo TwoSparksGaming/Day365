@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "InteractableInterface.h"
+#include "Interaction/InteractableInterface.h"
 #include "GameTypes.h"
 #include "PlaceSpot.generated.h"
 
@@ -36,7 +36,7 @@ class DAY365_API APlaceSpot : public AActor, public IInteractableInterface
     UMaterialInterface *PreviewMaterial = nullptr;
 
   public:
-    // IInteractableInterface ±¸Çö
+    // IInteractableInterface ï¿½ï¿½ï¿½ï¿½
     virtual void Interact_Implementation() override;
     virtual bool CanInteract_Implementation() override;
 
@@ -59,7 +59,7 @@ class DAY365_API APlaceSpot : public AActor, public IInteractableInterface
     void HidePreview();
 
   protected:
-    // ºí·çÇÁ¸°Æ®¿¡¼­ ±¸Çö
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     UFUNCTION(BlueprintImplementableEvent, Category = "PlaceSpot")
     void OnToggleItem(FItemData NewItem, bool isShow = true);
 

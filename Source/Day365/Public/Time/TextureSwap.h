@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "TimeAwareInterface.h"
+#include "Time/TimeAwareInterface.h"
 #include "GameTypes.h"
 #include "TextureSwap.generated.h"
 

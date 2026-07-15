@@ -1,5 +1,5 @@
-#include "TimeManager.h"
-#include "TimeAwareInterface.h"
+#include "Time/TimeManager.h"
+#include "Time/TimeAwareInterface.h"
 #include "Kismet/GameplayStatics.h"
 
 ATimeManager::ATimeManager()

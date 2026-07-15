@@ -5,8 +5,8 @@
 #include "GameTypes.h"
 #include "InputActionValue.h"
 #include "Camera/PlayerCameraManager.h"
-#include "InteractableInterface.h"
-#include "PlaceSpot.h"
+#include "Interaction/InteractableInterface.h"
+#include "Interaction/PlaceSpot.h"
 #include "MainCharacter.generated.h"
 
 class UCameraComponent;

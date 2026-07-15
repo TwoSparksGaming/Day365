@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InteractableBase.h"
+#include "Interaction/InteractableBase.h"
 #include "InteractableWithCamera.generated.h"
 
 class UCameraComponent;

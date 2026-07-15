@@ -1,6 +1,6 @@
 #include "PaintPuzzleManager.h"
-#include "PlaceSpot.h"
-#include "TextureSwap.h"
+#include "Interaction/PlaceSpot.h"
+#include "Time/TextureSwap.h"
 
 APaintPuzzleManager::APaintPuzzleManager()
 {

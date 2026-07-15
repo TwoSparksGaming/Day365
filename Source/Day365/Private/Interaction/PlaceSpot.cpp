@@ -1,4 +1,4 @@
-#include "PlaceSpot.h"
+#include "Interaction/PlaceSpot.h"
 #include "MainCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/StaticMeshComponent.h"
@@ -60,10 +60,10 @@ void APlaceSpot::PlaceItem()
     if (VisualData == nullptr)
         return;
 
-    // ¸Þ½Ã
+    // ï¿½Þ½ï¿½
     MeshComponent->SetStaticMesh(VisualData->Mesh);
 
-    // ¸ÓÆ¼¸®¾ó
+    // ï¿½ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½
     for (int32 i = 0; i < VisualData->Materials.Num(); i++)
     {
         MeshComponent->SetMaterial(i, VisualData->Materials[i]);

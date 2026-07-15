@@ -7,7 +7,7 @@
 #include "Camera/CameraComponent.h"
 
 #include "GameTypes.h"
-#include "InteractableInterface.h"
+#include "Interaction/InteractableInterface.h"
 #include "InteractableBase.generated.h"
 
 UCLASS()
@@ -34,12 +34,12 @@ class DAY365_API AInteractableBase : public AActor, public IInteractableInterfac
     FItemData ItemData;
 
   public:
-    // IInteractableInterface ±¸Çö
+    // IInteractableInterface ï¿½ï¿½ï¿½ï¿½
     virtual void Interact_Implementation() override;
     virtual bool CanInteract_Implementation() override;
 
   protected:
-    // ÀÚ½Ä Å¬·¡½º¿¡¼­ OverrideÇØ¼­ Ä«¸Þ¶ó ¹ÝÈ¯
+    // ï¿½Ú½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Overrideï¿½Ø¼ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½È¯
     virtual UCameraComponent *GetInteractCamera() const
     {
         return nullptr;
