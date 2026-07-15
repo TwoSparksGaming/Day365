@@ -35,6 +35,7 @@
 *.xcodeproj
 *.xcworkspace
 *.suo
+*.sln
 *.opensdf
 *.sdf
 *.VC.db
@@ -78,3 +79,4 @@ Content/KiteDemo/*
 
 # Plugins
 Plugins/*
+
