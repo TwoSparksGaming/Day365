@@ -2,14 +2,30 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "GameTypes.h"
+#include "PuzzleManager.h"
+#include "Engine/StaticMeshActor.h"
 #include "PaintPuzzleManager.generated.h"
 
 class APlaceSpot;
 class ATextureSwap;
 
+USTRUCT(BlueprintType)
+struct FCombinationResult : public FTableRowBase
+{
+    GENERATED_BODY()
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Puzzle")
+    TArray<FName> ItemIDs;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Puzzle")
+    UMaterialInterface *ResultMaterial = nullptr;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Puzzle")
+    bool bIsCorrect = false;
+};
+
 UCLASS()
-class DAY365_API APaintPuzzleManager : public AActor
+class DAY365_API APaintPuzzleManager : public APuzzleManager
 {
     GENERATED_BODY()
 
@@ -27,14 +43,16 @@ class DAY365_API APaintPuzzleManager : public AActor
     APlaceSpot *PlaceSpot_C = nullptr;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Puzzle")
-    ATextureSwap *TargetTextureSwap = nullptr;
+    AStaticMeshActor *TargetActor = nullptr;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Puzzle")
+    UMaterialInterface *WrongPaintResult = nullptr;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Puzzle")
     UDataTable *CombinationTable = nullptr;
 
   public:
-    UFUNCTION(BlueprintCallable, Category = "Puzzle")
-    void CheckCombination();
+    virtual void CheckPuzzle() const override;
 
   private:
     TArray<FName> GetCurrentCombination() const;

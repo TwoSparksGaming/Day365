@@ -7,24 +7,38 @@ APaintPuzzleManager::APaintPuzzleManager()
     PrimaryActorTick.bCanEverTick = false;
 }
 
-void APaintPuzzleManager::CheckCombination()
+void APaintPuzzleManager::CheckPuzzle() const
 {
     TArray<FName> CurrentCombination = GetCurrentCombination();
     const FCombinationResult *Result = FindCombinationResult(CurrentCombination);
 
+    if (TargetActor == nullptr)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("TargetActor is not set."));
+        return;
+    }
+
+    UStaticMeshComponent *MeshComp = TargetActor->GetStaticMeshComponent();
+    if (MeshComp == nullptr)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("MeshComp is nullptr."));
+        return;
+    }
+
     if (Result == nullptr)
     {
-        UE_LOG(LogTemp, Warning, TEXT("No matching combination found"));
-        return;
-    }
+        if (WrongPaintResult == nullptr)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("WrongPaintResult is not set."));
+            return;
+        }
 
-    if (TargetTextureSwap == nullptr)
+        MeshComp->SetMaterial(0, WrongPaintResult);
+    }
+    else
     {
-        UE_LOG(LogTemp, Warning, TEXT("TargetTextureSwap is not set"));
-        return;
+        MeshComp->SetMaterial(0, Result->ResultMaterial);
     }
-
-    TargetTextureSwap->SetMaterials(Result->ResultMaterial);
 }
 
 TArray<FName> APaintPuzzleManager::GetCurrentCombination() const
@@ -51,7 +65,13 @@ const FCombinationResult *APaintPuzzleManager::FindCombinationResult(const TArra
         return nullptr;
 
     TArray<FCombinationResult *> AllRows;
-    CombinationTable->GetAllRows<FCombinationResult>(TEXT("FindCombinationResult"), AllRows);
+    CombinationTable->GetAllRows<FCombinationResult>(TEXT("APaintPuzzleManager::FindCombinationResult"), AllRows);
+
+    if (AllRows.IsEmpty() == true)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("No row found in CombinationTable."));
+        return nullptr;
+    }
 
     for (FCombinationResult *Result : AllRows)
     {

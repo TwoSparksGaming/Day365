@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "GameTypes.h"
 #include "TimeAwareInterface.generated.h"
 
 UINTERFACE(MinimalAPI, Blueprintable)
@@ -17,6 +16,6 @@ class DAY365_API ITimeAwareInterface
 
   public:
     UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Time")
-    void OnTimeChanged(ETimeState NewState);
-    virtual void OnTimeChanged_Implementation(ETimeState NewState) {}
+    void OnTimeChanged(FName NewTimeState);
+    virtual void OnTimeChanged_Implementation(const FName &NewTimeState) {}
 };

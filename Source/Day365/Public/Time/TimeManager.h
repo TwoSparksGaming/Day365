@@ -14,16 +14,40 @@ class DAY365_API ATimeManager : public AActor
     ATimeManager();
 
   protected:
-    UPROPERTY(BlueprintReadOnly, Category = "Time")
-    ETimeState CurrentState = ETimeState::Present;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Time")
+    FName CurrentTimeState = "t1";
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Time")
+    FName MovingTimeState = "t1";
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Time")
+    UDataTable *TimeTransitionTable = nullptr;
 
   public:
-    UFUNCTION(BlueprintCallable, Category = "Time")
-    void NotifyTimeChanged(ETimeState NewState);
+    UFUNCTION(BlueprintPure, Category = "Time")
+    FName GetCurrentTimeState() const
+    {
+        return CurrentTimeState;
+    }
 
     UFUNCTION(BlueprintPure, Category = "Time")
-    ETimeState GetCurrentState() const
+    FName GetMovingTimeState() const
     {
-        return CurrentState;
+        return MovingTimeState;
     }
+
+    UFUNCTION(BlueprintCallable, Category = "Time")
+    void NotifyTimeChanged(FName NewState);
+
+    UFUNCTION(BlueprintCallable, Category = "Time")
+    bool CanMoveForward();
+
+    UFUNCTION(BlueprintCallable, Category = "Time")
+    bool CanMoveBackward();
+
+    UFUNCTION(BlueprintCallable, Category = "Time")
+    void ChangeTime();
+
+  private:
+    const FTimeTransition *FindTransition() const;
 };

@@ -7,6 +7,7 @@
 #include "Camera/PlayerCameraManager.h"
 #include "Interaction/InteractableInterface.h"
 #include "Interaction/PlaceSpot.h"
+#include "Time/TimeManager.h"
 #include "MainCharacter.generated.h"
 
 class UCameraComponent;
@@ -64,18 +65,18 @@ class DAY365_API AMainCharacter : public ACharacter
     UPROPERTY(BlueprintReadWrite, Category = "Inventory")
     int32 SelectedIndex = 0;
 
+    UPROPERTY(BlueprintReadWrite, Category = "Inventory")
+    bool bHaveClock = false;
+
     // Time
-    UPROPERTY(BlueprintReadWrite, Category = "Time")
-    ETimeState CurrentTimeState = ETimeState::Present;
-
-    UPROPERTY(BlueprintReadWrite, Category = "Time")
-    ETimeState TargetTimeState = ETimeState::Present;
-
     UPROPERTY(BlueprintReadWrite, Category = "Time")
     bool bIsTimeChanging = false;
 
-    UPROPERTY(BlueprintReadWrite, Category = "Time")
-    bool bHaveClock = false;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Time")
+    ATimeManager *TimeManager = nullptr;
+
+    UFUNCTION(BlueprintPure, Category = "Time")
+    FName GetCurrentTimeState() const;
 
     UFUNCTION(BlueprintCallable, Category = "Time")
     bool PreChangeTime(const bool bToFuture);
@@ -102,6 +103,9 @@ class DAY365_API AMainCharacter : public ACharacter
 
   public:
     AMainCharacter();
+
+    // Initialize
+    void Initialize();
 
     // Input
     void Move(const FInputActionValue &Value);

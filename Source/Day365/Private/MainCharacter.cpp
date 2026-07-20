@@ -11,15 +11,35 @@
 // Sets default values
 AMainCharacter::AMainCharacter()
 {
-    // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need
-    // it.
     PrimaryActorTick.bCanEverTick = true;
+}
+
+// Initialize
+void AMainCharacter::Initialize()
+{
+    // TimeManager
+    if (TimeManager == nullptr)
+    {
+        TArray<AActor *> TimeManagers;
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATimeManager::StaticClass(), TimeManagers);
+
+        if (TimeManagers.Num() == 1)
+        {
+            TimeManager = Cast<ATimeManager>(TimeManagers[0]);
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("TimeManager not found or more than one in level."));
+        }
+    }
 }
 
 // Called when the game starts or when spawned
 void AMainCharacter::BeginPlay()
 {
     Super::BeginPlay();
+
+    Initialize();
 }
 
 // Called every frame
@@ -42,9 +62,9 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCompo
     EnhancedInput->BindAction(IA_Cancel, ETriggerEvent::Started, this, &AMainCharacter::CancelInteraction);
 }
 
-// ������������������������������������������������������������������������������������
+// ---------------------------------------------------------------------------------------------
 // Inventory
-// ������������������������������������������������������������������������������������
+// ---------------------------------------------------------------------------------------------
 void AMainCharacter::AddItemToInventory(FItemData NewItem)
 {
     InventoryItems.Add(NewItem);
@@ -82,9 +102,9 @@ FItemData AMainCharacter::GetSelectedItem() const
     return FItemData();
 }
 
-// ������������������������������������������������������������������������������������
+// ---------------------------------------------------------------------------------------------
 // Interaction
-// ������������������������������������������������������������������������������������
+// ---------------------------------------------------------------------------------------------
 void AMainCharacter::PerformInteractionTrace()
 {
     if (bIsInteracting == true)
@@ -95,7 +115,7 @@ void AMainCharacter::PerformInteractionTrace()
         return;
     }
 
-    // ī�޶� ��ġ, ���� ��������
+    // LineTrace
     APlayerCameraManager *CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
     if (CameraManager == nullptr)
         return;
@@ -121,7 +141,7 @@ void AMainCharacter::PerformInteractionTrace()
     if (HitActor == nullptr)
         return;
 
-    // PlaceSpot ���� üũ
+    // PlaceSpot
     APlaceSpot *PlaceSpot = Cast<APlaceSpot>(HitActor);
     if (PlaceSpot != nullptr)
     {
@@ -151,7 +171,7 @@ void AMainCharacter::PerformInteractionTrace()
         return;
     }
 
-    // InteractableBase üũ
+    // InteractableBase
     AInteractableBase *Interactable = Cast<AInteractableBase>(HitActor);
     if (Interactable != nullptr)
     {
@@ -168,7 +188,7 @@ void AMainCharacter::PerformInteractionTrace()
         return;
     }
 
-    // �� �� �ƴϸ� �ʱ�ȭ
+    // Interaction Hint
     CurrentTarget = nullptr;
     SetInteractWidgetVisible(false);
     if (CurrentPlaceSpot != nullptr)
@@ -212,87 +232,55 @@ void AMainCharacter::CancelInteraction()
     bIsInteracting = false;
 }
 
-// ������������������������������������������������������������������������������������
+// ---------------------------------------------------------------------------------------------
 // Time
-// ������������������������������������������������������������������������������������
+// ---------------------------------------------------------------------------------------------
+FName AMainCharacter::GetCurrentTimeState() const
+{
+    if (TimeManager == nullptr)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("TimeManager is not initialized."));
+        return NAME_None;
+    }
+
+    return TimeManager->GetCurrentTimeState();
+}
+
 bool AMainCharacter::PreChangeTime(const bool bToFuture)
 {
     if (bIsTimeChanging == true)
         return false;
 
+    if (TimeManager == nullptr)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("TimeManager is not set"));
+        return false;
+    }
+
+    if (bToFuture == true && TimeManager->CanMoveForward() == false)
+        return false;
+
+    if (bToFuture == false && TimeManager->CanMoveBackward() == false)
+        return false;
+
     bIsTimeChanging = true;
-
-    if (bToFuture == true)
-    {
-        if (CurrentTimeState == ETimeState::Past)
-        {
-            TargetTimeState = ETimeState::Present;
-        }
-        else if (CurrentTimeState == ETimeState::Present)
-        {
-            TargetTimeState = ETimeState::Future;
-        }
-        else if (CurrentTimeState == ETimeState::Future)
-        {
-            bIsTimeChanging = false;
-            return false;
-        }
-    }
-    else
-    {
-        if (CurrentTimeState == ETimeState::Past)
-        {
-            bIsTimeChanging = false;
-            return false;
-        }
-        else if (CurrentTimeState == ETimeState::Present)
-        {
-            TargetTimeState = ETimeState::Past;
-        }
-        else if (CurrentTimeState == ETimeState::Future)
-        {
-            TargetTimeState = ETimeState::Present;
-        }
-    }
-
     return true;
 }
 
 void AMainCharacter::ChangeTime()
 {
-    if (CurrentTimeState == TargetTimeState)
-        return;
-
-    CurrentTimeState = TargetTimeState;
-
-    TArray<AActor *> TimeManagers;
-    TArray<AActor *> PaintPuzzleManagers;
-
-    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATimeManager::StaticClass(), TimeManagers);
-    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APaintPuzzleManager::StaticClass(), PaintPuzzleManagers);
-
-    if (TimeManagers.IsEmpty() == true)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("TimeManager not found"));
-        return;
-    }
-
-    if (PaintPuzzleManagers.IsEmpty() == true)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("PaintPuzzleManager not found"));
-        return;
-    }
-
-    ATimeManager *TimeManager = Cast<ATimeManager>(TimeManagers[0]);
     if (TimeManager == nullptr)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("TimeManager is not set."));
         return;
+    }
 
-    APaintPuzzleManager *PaintPuzzleManager = Cast<APaintPuzzleManager>(PaintPuzzleManagers[0]);
-    if (PaintPuzzleManager == nullptr)
+    if (TimeManager->GetMovingTimeState() == NAME_None)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("TimeManager::MovingTimeState is NAME_None."));
         return;
+    }
 
-    TimeManager->NotifyTimeChanged(TargetTimeState);
-    PaintPuzzleManager->CheckCombination();
-
+    TimeManager->ChangeTime();
     bIsTimeChanging = false;
 }

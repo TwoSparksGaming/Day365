@@ -24,11 +24,11 @@ void AMeshSwap::BeginPlay()
     FutureMesh->SetVisibility(false);
 }
 
-void AMeshSwap::OnTimeChanged_Implementation(ETimeState NewState)
+void AMeshSwap::OnTimeChanged_Implementation(const FName &NewTimeState)
 {
-    CurrentState = NewState;
+    CurrentTimeState = NewTimeState;
 
-    PastMesh->SetVisibility(NewState == ETimeState::Past);
-    PresentMesh->SetVisibility(NewState == ETimeState::Present);
-    FutureMesh->SetVisibility(NewState == ETimeState::Future);
+    // PastMesh->SetVisibility(NewState == ETimeState::Past);
+    // PresentMesh->SetVisibility(NewState == ETimeState::Present);
+    // FutureMesh->SetVisibility(NewState == ETimeState::Future);
 }

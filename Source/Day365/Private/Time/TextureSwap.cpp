@@ -9,27 +9,27 @@ ATextureSwap::ATextureSwap()
     RootComponent = MeshComponent;
 }
 
-void ATextureSwap::OnTimeChanged_Implementation(ETimeState NewState)
+void ATextureSwap::OnTimeChanged_Implementation(const FName &NewTimeState)
 {
     UMaterialInterface *TargetMaterial = nullptr;
 
-    if (NewState == ETimeState::Past)
-    {
-        TargetMaterial = PastMaterial;
-    }
-    else if (NewState == ETimeState::Present)
-    {
-        TargetMaterial = PresentMaterial;
-    }
-    else if (NewState == ETimeState::Future)
-    {
-        TargetMaterial = FutureMaterial;
-    }
-    else
-    {
-        UE_LOG(LogTemp, Warning, TEXT("TimeState Not Implemented."));
-        return;
-    }
+    // if (NewState == ETimeState::Past)
+    //{
+    //     TargetMaterial = PastMaterial;
+    // }
+    // else if (NewState == ETimeState::Present)
+    //{
+    //     TargetMaterial = PresentMaterial;
+    // }
+    // else if (NewState == ETimeState::Future)
+    //{
+    //     TargetMaterial = FutureMaterial;
+    // }
+    // else
+    //{
+    //     UE_LOG(LogTemp, Warning, TEXT("TimeState Not Implemented."));
+    //     return;
+    // }
 
     if (TargetMaterial == nullptr)
         return;

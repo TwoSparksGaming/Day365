@@ -28,7 +28,7 @@ class DAY365_API ATextureSwap : public AActor, public ITimeAwareInterface
     UMaterialInterface *FutureMaterial = nullptr;
 
   public:
-    virtual void OnTimeChanged_Implementation(ETimeState NewState) override;
+    virtual void OnTimeChanged_Implementation(const FName &NewTimeState) override;
 
     void SetMaterials(UMaterialInterface *Material);
     void SetMaterials(UMaterialInterface *Past, UMaterialInterface *Present, UMaterialInterface *Future);

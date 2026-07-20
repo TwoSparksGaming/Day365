@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Engine/Texture2D.h"
 #include "Engine/StaticMesh.h"
+#include "PuzzleManager.h"
 #include "GameTypes.generated.h"
 
 UENUM(BlueprintType)
@@ -20,14 +21,6 @@ enum class EItemType : uint8
     Tool UMETA(DisplayName = "Tool"),
     Note UMETA(DisplayName = "Note"),
     Special UMETA(DisplayName = "Special")
-};
-
-UENUM(BlueprintType)
-enum class ETimeState : uint8
-{
-    Present UMETA(DisplayName = "Present"),
-    Past UMETA(DisplayName = "Past"),
-    Future UMETA(DisplayName = "Future")
 };
 
 USTRUCT(BlueprintType)
@@ -69,13 +62,44 @@ struct FItemVisualData : public FTableRowBase
 };
 
 USTRUCT(BlueprintType)
-struct FCombinationResult : public FTableRowBase
+struct FTimeBranch
 {
     GENERATED_BODY()
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Puzzle")
-    TArray<FName> ItemIDs;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Time")
+    FName TargetTimeState;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Puzzle")
-    UMaterialInterface *ResultMaterial = nullptr;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Time")
+    APuzzleManager *PuzzleManager = nullptr;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Time")
+    FName CorrectTimeState;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Time")
+    FName WrongTimeState;
+};
+
+USTRUCT(BlueprintType)
+struct FTimeTransition : public FTableRowBase
+{
+    GENERATED_BODY()
+
+    // 나중에 시간 바뀔때 레벨 자체가 바뀐다거나, 조건에 따라 분기할때 필요할듯 해서 남겨둠.
+    // UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Time")
+    // FName FromState;
+
+    // UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Time")
+    // FTimeBranch Forward;
+
+    // UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Time")
+    // FTimeBranch Backward;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Time")
+    FName Backward;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Time")
+    FName Current;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Time")
+    FName Forward;
 };

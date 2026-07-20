@@ -25,9 +25,9 @@ class DAY365_API AMeshSwap : public AActor, public ITimeAwareInterface
     UStaticMeshComponent *FutureMesh;
 
     UPROPERTY(BlueprintReadWrite, Category = "TimeSwap")
-    ETimeState CurrentState = ETimeState::Present;
+    FName CurrentTimeState = "t1";
 
   public:
     virtual void BeginPlay() override;
-    virtual void OnTimeChanged_Implementation(ETimeState NewState) override;
+    virtual void OnTimeChanged_Implementation(const FName &NewTimeState) override;
 };
