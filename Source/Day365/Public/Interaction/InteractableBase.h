@@ -34,12 +34,10 @@ class DAY365_API AInteractableBase : public AActor, public IInteractableInterfac
     FItemData ItemData;
 
   public:
-    // IInteractableInterface ����
     virtual void Interact_Implementation() override;
     virtual bool CanInteract_Implementation() override;
 
   protected:
-    // �ڽ� Ŭ�������� Override�ؼ� ī�޶� ��ȯ
     virtual UCameraComponent *GetInteractCamera() const
     {
         return nullptr;

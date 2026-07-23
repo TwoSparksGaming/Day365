@@ -46,13 +46,17 @@ class DAY365_API APaintPuzzleManager : public APuzzleManager
     AStaticMeshActor *TargetActor = nullptr;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Puzzle")
-    UMaterialInterface *WrongPaintResult = nullptr;
+    UMaterialInterface *WrongMaterial = nullptr;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Puzzle")
+    UMaterialInterface *OriginalMaterial = nullptr;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Puzzle")
     UDataTable *CombinationTable = nullptr;
 
   public:
     virtual void CheckPuzzle() const override;
+    virtual void RevertPuzzle() const override;
 
   private:
     TArray<FName> GetCurrentCombination() const;

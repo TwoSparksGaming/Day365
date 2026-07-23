@@ -33,7 +33,10 @@ void ATimeManager::NotifyTimeChanged(FName NewTimeState)
         if (PuzzleManager == nullptr)
             continue;
 
-        PuzzleManager->CheckPuzzle();
+        if (IsMovingBackward == true)
+            PuzzleManager->RevertPuzzle();
+        else
+            PuzzleManager->CheckPuzzle();
     }
 }
 
@@ -44,7 +47,16 @@ bool ATimeManager::CanMoveForward()
         return false;
 
     MovingTimeState = Transition->Forward;
-    return MovingTimeState != NAME_None;
+
+    if (MovingTimeState != NAME_None)
+    {
+        IsMovingBackward = false;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool ATimeManager::CanMoveBackward()
@@ -54,7 +66,16 @@ bool ATimeManager::CanMoveBackward()
         return false;
 
     MovingTimeState = Transition->Backward;
-    return MovingTimeState != NAME_None;
+
+    if (MovingTimeState != NAME_None)
+    {
+        IsMovingBackward = true;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 void ATimeManager::ChangeTime()

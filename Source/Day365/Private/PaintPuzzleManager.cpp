@@ -27,18 +27,30 @@ void APaintPuzzleManager::CheckPuzzle() const
 
     if (Result == nullptr)
     {
-        if (WrongPaintResult == nullptr)
+        if (WrongMaterial == nullptr)
         {
-            UE_LOG(LogTemp, Warning, TEXT("WrongPaintResult is not set."));
+            UE_LOG(LogTemp, Warning, TEXT("WrongMaterial is not set."));
             return;
         }
 
-        MeshComp->SetMaterial(0, WrongPaintResult);
+        MeshComp->SetMaterial(0, WrongMaterial);
     }
     else
     {
         MeshComp->SetMaterial(0, Result->ResultMaterial);
     }
+}
+
+void APaintPuzzleManager::RevertPuzzle() const
+{
+    UStaticMeshComponent *MeshComp = TargetActor->GetStaticMeshComponent();
+    if (MeshComp == nullptr)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("MeshComp is nullptr."));
+        return;
+    }
+
+    MeshComp->SetMaterial(0, OriginalMaterial);
 }
 
 TArray<FName> APaintPuzzleManager::GetCurrentCombination() const

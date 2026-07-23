@@ -50,4 +50,5 @@ class DAY365_API ATimeManager : public AActor
 
   private:
     const FTimeTransition *FindTransition() const;
+    bool IsMovingBackward = false;
 };

@@ -18,4 +18,9 @@ class DAY365_API APuzzleManager : public AActor
     {
         return;
     }
+
+    virtual void RevertPuzzle() const
+    {
+        return;
+    }
 };

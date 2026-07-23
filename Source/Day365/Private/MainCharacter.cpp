@@ -164,8 +164,14 @@ void AMainCharacter::PerformInteractionTrace()
             if (SelectedItem.IsValid() == false)
                 return;
 
-            PlaceSpot->ShowPreview();
-            CurrentPlaceSpot = PlaceSpot;
+            if (CurrentPlaceSpot != PlaceSpot)
+            {
+                if (CurrentPlaceSpot != nullptr)
+                    CurrentPlaceSpot->HidePreview();
+
+                CurrentPlaceSpot = PlaceSpot;
+                CurrentPlaceSpot->ShowPreview();
+            }
         }
 
         return;
@@ -192,7 +198,10 @@ void AMainCharacter::PerformInteractionTrace()
     CurrentTarget = nullptr;
     SetInteractWidgetVisible(false);
     if (CurrentPlaceSpot != nullptr)
+    {
         CurrentPlaceSpot->HidePreview();
+        CurrentPlaceSpot = nullptr;
+    }
 }
 
 void AMainCharacter::OnInteract()
